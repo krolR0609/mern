@@ -8,7 +8,6 @@ const router = Router();
 
 router.post('/generate', auth, async (req, res) => {
     try {
-        const baseUrl = config.get('baseUrl');
         const { from } = req.body;
         
         const code = shortid.generate();
@@ -18,10 +17,8 @@ router.post('/generate', auth, async (req, res) => {
             return res.json({ link: existing });
         }
 
-        const to = baseUrl + '/t/' + code;
-
         const link = new Link({
-            code, to, from, owner: req.user.userId
+            code, from, owner: req.user.userId
         })
 
         await link.save();

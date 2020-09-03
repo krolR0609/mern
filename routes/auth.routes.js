@@ -26,14 +26,15 @@ router.post(
         }
 
         const { email, password } = req.body;
-        
-        const candidate = await User.findOne({ email });
+        const lowerEmail = email.toLowerCase();
+
+        const candidate = await User.findOne({ email: lowerEmail });
         if (candidate) {
             return res.status(400).json({ message: 'This email already in user' });
         }
         
         const hashedPassword = await bcrypt.hash(password, 1);
-        const user = new User({ email, password: hashedPassword });
+        const user = new User({ email: lowerEmail, password: hashedPassword });
         const createdUser = await user.save();
         if (!createdUser) {
             return res.status(400).json({ message: "Something went wrong, try again" });
@@ -63,7 +64,9 @@ router.post(
             }
 
             const { email, password } = req.body;
-            const user = await User.findOne({ email });
+            const lowerEmail = email.toLowerCase();
+
+            const user = await User.findOne({ email: lowerEmail });
             if (!user) {
                 return res.status(400).json({ message: "User does not exist" });
             }
