@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const shortid = require('shortid');
 const Link = require('../models/Link');
+const { MapLink } = require('../helpers/LinkHelper');
 const auth = require('../middleware/auth.middleware');
 const config = require('config');
 
@@ -32,8 +33,11 @@ router.post('/generate', auth, async (req, res) => {
 
 router.get('/', auth, async (req, res) => {
     try {
+        var baseUrl = req.protocol + '://' + req.get('host') + "/t/";
         const links = await Link.find({ owner: req.user.userId });
-        res.status(200).json(links);        
+        res.status(200).json(links.map(link => {
+            return MapLink(link, baseUrl)
+        }));        
     } catch (err) {
         res.status(500).json({ message: 'Something went wrong, try again' });
     }
@@ -41,8 +45,10 @@ router.get('/', auth, async (req, res) => {
 
 router.get('/:id', auth, async (req, res) => {
     try {
+        var baseUrl = req.protocol + '://' + req.get('host') + "/t/";
         const link = await Link.findById(req.params.id);
-        res.status(200).json(link);        
+        const mappedLink = MapLink(link, baseUrl);
+        res.status(200).json(mappedLink);        
     } catch (err) {
         res.status(500).json({ message: 'Something went wrong, try again' });
     }

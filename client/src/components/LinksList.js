@@ -7,7 +7,7 @@ export const LinksList = ({ links }) => {
     }
 
     return (
-        <table>
+        <table className="responsive-table">
             <thead>
                 <tr>
                     <th>#</th>
@@ -23,7 +23,7 @@ export const LinksList = ({ links }) => {
                         <tr key={link._id}>
                             <td>{++index}</td>
                             <td>{link.from}</td>
-                            <td>{link.to}</td>
+                            <td>{link.shortUrl}</td>
                             <td>
                                 <Link to={`/detail/${link._id}`}>Open</Link>
                             </td>
